@@ -1,34 +1,20 @@
-// llmNode.js
+// nodes/llmNode.js
 
-import { Handle, Position } from 'reactflow';
+import { Position } from 'reactflow';
+import { BaseNode } from './BaseNode';
 
 export const LLMNode = ({ id, data }) => {
+  const handles = [
+    { id: `${id}-system`,   type: 'target', position: Position.Left,  style: { top: '33%' }, label: 'system' },
+    { id: `${id}-prompt`,   type: 'target', position: Position.Left,  style: { top: '67%' }, label: 'prompt' },
+    { id: `${id}-response`, type: 'source', position: Position.Right, label: 'response' },
+  ];
 
   return (
-    <div style={{width: 200, height: 80, border: '1px solid black'}}>
-      <Handle
-        type="target"
-        position={Position.Left}
-        id={`${id}-system`}
-        style={{top: `${100/3}%`}}
-      />
-      <Handle
-        type="target"
-        position={Position.Left}
-        id={`${id}-prompt`}
-        style={{top: `${200/3}%`}}
-      />
-      <div>
-        <span>LLM</span>
-      </div>
-      <div>
-        <span>This is a LLM.</span>
-      </div>
-      <Handle
-        type="source"
-        position={Position.Right}
-        id={`${id}-response`}
-      />
-    </div>
+    <BaseNode id={id} title="LLM" color="#7c3aed" handles={handles}>
+      <span style={{ color: '#666', fontSize: 12 }}>
+        This is a LLM.
+      </span>
+    </BaseNode>
   );
-}
+};
