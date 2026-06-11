@@ -1,13 +1,23 @@
 import { PipelineToolbar } from './toolbar';
 import { PipelineUI } from './ui';
 import { SubmitButton } from './submit';
+import './index.css';
 
 function App() {
   return (
-    <div>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100vh',
+      width: '100vw',
+      background: 'var(--bg-app)',
+      overflow: 'hidden',
+    }}>
       <PipelineToolbar />
-      <PipelineUI />
-      <SubmitButton />
+      <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+        <PipelineUI />
+        <SubmitButton />
+      </div>
     </div>
   );
 }

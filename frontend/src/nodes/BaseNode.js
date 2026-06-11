@@ -1,122 +1,134 @@
-// nodes/BaseNode.js
-// ─────────────────────────────────────────────────────────────
-// Central abstraction for ALL nodes in the pipeline canvas.
-// Every node passes a config object; BaseNode handles the shell,
-// title, fields, handles, and delete button — nothing is duplicated.
-// ─────────────────────────────────────────────────────────────
-
 import { useState } from 'react';
 import { Handle, Position, useReactFlow } from 'reactflow';
 
-/**
- * BaseNode
- *
- * @param {string}    id       - Node id from ReactFlow
- * @param {string}    title    - Label shown in the node header e.g. "LLM"
- * @param {string}    [color]  - Optional accent color for the header strip
- * @param {Array}     handles  - Array of handle config objects (see below)
- * @param {ReactNode} children - The body content (fields, labels, selects…)
- *
- * Handle config shape:
- * {
- *   type:      'source' | 'target'
- *   position:  Position.Left | Position.Right | Position.Top | Position.Bottom
- *   id:        string   — unique handle id
- *   style:     object   — optional inline style overrides (e.g. { top: '33%' })
- *   label:     string   — optional small label rendered next to the handle
- * }
- */
-export const BaseNode = ({ id, title, color = '#1a192b', handles = [], children }) => {
+const NODE_COLORS = {
+  customInput:  { accent: '#3b82f6', glow: 'rgba(59,130,246,0.28)'  },
+  llm:          { accent: '#a855f7', glow: 'rgba(168,85,247,0.28)'  },
+  customOutput: { accent: '#22c55e', glow: 'rgba(34,197,94,0.28)'   },
+  text:         { accent: '#f59e0b', glow: 'rgba(245,158,11,0.28)'  },
+  note:         { accent: '#facc15', glow: 'rgba(250,204,21,0.28)'  },
+  api:          { accent: '#06b6d4', glow: 'rgba(6,182,212,0.28)'   },
+  filter:       { accent: '#f97316', glow: 'rgba(249,115,22,0.28)'  },
+  timer:        { accent: '#ec4899', glow: 'rgba(236,72,153,0.28)'  },
+  transform:    { accent: '#8b5cf6', glow: 'rgba(139,92,246,0.28)'  },
+};
+
+export function StyledHandle({ type, position, id, accentColor, label, style = {} }) {
+  const isRight = position === Position.Right;
+  return (
+    <Handle
+      type={type}
+      position={position}
+      id={id}
+      style={{
+        width: 10, height: 10, borderRadius: '50%',
+        background: accentColor,
+        border: '2px solid #0a0a0f',
+        boxShadow: `0 0 0 1px ${accentColor}50`,
+        transition: 'box-shadow 0.15s ease',
+        ...style,
+      }}
+    >
+      {label && (
+        <span style={{
+          position: 'absolute',
+          fontSize: 9, fontWeight: 500,
+          color: '#64748b',
+          whiteSpace: 'nowrap',
+          letterSpacing: '0.04em',
+          textTransform: 'uppercase',
+          left:  isRight ? 'auto' : 14,
+          right: isRight ? 14    : 'auto',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          pointerEvents: 'none',
+        }}>
+          {label}
+        </span>
+      )}
+    </Handle>
+  );
+}
+
+export const BaseNode = ({
+  id, nodeType, title, icon, selected,
+  minWidth = 210, children, handles = [], style = {},
+}) => {
   const [hovered, setHovered] = useState(false);
   const { deleteElements } = useReactFlow();
 
-  const handleDelete = () => {
-    deleteElements({ nodes: [{ id }] });
-  };
+  const { accent, glow } = NODE_COLORS[nodeType] || { accent: '#888', glow: 'rgba(136,136,136,0.25)' };
+
+  const elevation = selected
+    ? `0 0 0 1.5px ${accent}, 0 0 20px 4px ${glow}, 0 8px 32px rgba(0,0,0,0.6)`
+    : hovered
+    ? `0 0 0 1px ${accent}50, 0 6px 24px rgba(0,0,0,0.5), 0 0 12px 1px ${glow}`
+    : '0 2px 12px rgba(0,0,0,0.4)';
 
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        minWidth: 200,
-        minHeight: 80,
-        border: `1px solid ${color}`,
-        borderRadius: 8,
-        background: '#fff',
-        boxSizing: 'border-box',
-        fontFamily: 'sans-serif',
-        fontSize: 13,
-        position: 'relative',
-        boxShadow: hovered ? `0 4px 16px ${color}40` : '0 2px 6px rgba(0,0,0,0.08)',
-        transition: 'box-shadow 0.2s ease',
+        minWidth,
+        background:   '#0e0e13',
+        border:       `1px solid ${selected ? accent+'70' : hovered ? accent+'35' : 'rgba(255,255,255,0.07)'}`,
+        borderRadius:  10,
+        boxShadow:     elevation,
+        transition:   'box-shadow 0.18s ease, border-color 0.18s ease',
+        overflow:     'hidden',
+        position:     'relative',
+        fontFamily:   "'Inter', sans-serif",
+        fontSize:      13,
+        boxSizing:    'border-box',
+        ...style,
       }}
     >
-      {/* ── Header strip ── */}
       <div style={{
-        background: color,
-        color: '#fff',
-        padding: '6px 12px',
-        borderRadius: '7px 7px 0 0',
-        fontWeight: 600,
-        fontSize: 13,
-        letterSpacing: '0.03em',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
-        <span>{title}</span>
+        height: 3,
+        background: `linear-gradient(90deg, ${accent} 0%, ${accent}55 100%)`,
+      }} />
 
-        {/* ── Delete button — appears on hover ── */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        gap: 6, padding: '7px 10px 6px',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        background: `linear-gradient(135deg, ${accent}14 0%, transparent 80%)`,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          {icon && <span style={{ fontSize: 12, color: accent, lineHeight: 1 }}>{icon}</span>}
+          <span style={{ fontSize: 11, fontWeight: 600, color: accent, letterSpacing: '0.03em', lineHeight: 1 }}>
+            {title}
+          </span>
+        </div>
+
         {hovered && (
           <span
-            onClick={handleDelete}
+            onClick={() => deleteElements({ nodes: [{ id }] })}
             title="Delete node"
-            style={{
-              cursor: 'pointer',
-              fontSize: 16,
-              lineHeight: 1,
-              padding: '0 3px',
-              opacity: 0.85,
-              borderRadius: 4,
-              transition: 'opacity 0.15s',
-            }}
+            style={{ cursor: 'pointer', fontSize: 16, lineHeight: 1, color: '#475569', padding: '0 3px', borderRadius: 4 }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#ef4444')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = '#475569')}
           >
             ×
           </span>
         )}
       </div>
 
-      {/* ── Body content supplied by each node ── */}
       <div style={{ padding: '10px 12px' }}>
         {children}
       </div>
 
-      {/* ── Handles rendered from config ── */}
       {handles.map((h) => (
-        <Handle
+        <StyledHandle
           key={h.id}
           type={h.type}
           position={h.position}
           id={h.id}
-          style={h.style || {}}
-        >
-          {h.label && (
-            <span style={{
-              position: 'absolute',
-              fontSize: 10,
-              color: '#555',
-              whiteSpace: 'nowrap',
-              left: h.position === Position.Right ? 'auto' : 8,
-              right: h.position === Position.Right ? 8 : 'auto',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              pointerEvents: 'none',
-            }}>
-              {h.label}
-            </span>
-          )}
-        </Handle>
+          accentColor={accent}
+          label={h.label}
+          style={h.style}
+        />
       ))}
     </div>
   );

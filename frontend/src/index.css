@@ -1,13 +1,208 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ── Design Tokens ─────────────────────────────────────────── */
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Surface */
+  --bg-app:       #08080d;
+  --bg-canvas:    #0a0a0f;
+  --bg-surface:   #0e0e13;
+  --bg-elevated:  #1f2235;
+  --bg-hover:     #252840;
+  --border:       rgba(255,255,255,0.07);
+  --border-focus: rgba(255,255,255,0.18);
+
+  /* Text */
+  --text-primary:   #f0f2f8;
+  --text-secondary: #8b90a7;
+  --text-muted:     #555970;
+
+  /* Node accent palette */
+  --clr-input:     #3b82f6;
+  --clr-llm:       #a855f7;
+  --clr-output:    #22c55e;
+  --clr-text:      #f97316;
+  --clr-note:      #eab308;
+  --clr-api:       #06b6d4;
+  --clr-filter:    #ef4444;
+  --clr-timer:     #8b5cf6;
+  --clr-transform: #14b8a6;
+
+  /* Glow alphas */
+  --glow-input:     rgba(59,130,246,0.35);
+  --glow-llm:       rgba(168,85,247,0.35);
+  --glow-output:    rgba(34,197,94,0.35);
+  --glow-text:      rgba(249,115,22,0.35);
+  --glow-note:      rgba(234,179,8,0.35);
+  --glow-api:       rgba(6,182,212,0.35);
+  --glow-filter:    rgba(239,68,68,0.35);
+  --glow-timer:     rgba(139,92,246,0.35);
+  --glow-transform: rgba(20,184,166,0.35);
+
+  /* Radius */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-xl:   20px;
+  --radius-pill: 999px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-mid:  200ms ease;
+  --transition-slow: 300ms ease;
+}
+
+/* ── Reset & Base ────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: var(--bg-app);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* ── Shared Node Form Elements ───────────────────────────────── */
+.node-input,
+.node-select,
+.node-textarea {
+  width: 100%;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  padding: 5px 8px;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  appearance: none;
 }
+
+.node-input:focus,
+.node-select:focus,
+.node-textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.06);
+}
+
+.node-input::placeholder,
+.node-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.node-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b90a7' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 26px;
+  cursor: pointer;
+}
+
+.node-select option {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.node-textarea {
+  resize: none;
+  line-height: 1.6;
+  min-height: 60px;
+}
+
+.node-label {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.node-field {
+  margin-bottom: 8px;
+}
+
+.node-field:last-child {
+  margin-bottom: 0;
+}
+
+/* ── ReactFlow overrides ─────────────────────────────────────── */
+.react-flow__renderer { background: transparent !important; }
+
+.react-flow__controls {
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+  overflow: hidden;
+}
+
+.react-flow__controls-button {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid var(--border) !important;
+  color: var(--text-secondary) !important;
+  width: 28px !important;
+  height: 28px !important;
+  padding: 6px !important;
+  transition: background var(--transition-fast), color var(--transition-fast) !important;
+}
+
+.react-flow__controls-button:last-child {
+  border-bottom: none !important;
+}
+
+.react-flow__controls-button:hover {
+  background: var(--bg-hover) !important;
+  color: var(--text-primary) !important;
+}
+
+.react-flow__controls-button svg {
+  fill: currentColor !important;
+  max-width: 11px;
+  max-height: 11px;
+}
+
+.react-flow__minimap {
+  background: var(--bg-elevated) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-md) !important;
+  overflow: hidden;
+}
+
+.react-flow__edge-path {
+  stroke: rgba(255,255,255,0.2) !important;
+  stroke-width: 1.5 !important;
+}
+
+.react-flow__edge.selected .react-flow__edge-path,
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke: rgba(255,255,255,0.5) !important;
+}
+
+.react-flow__connection-line {
+  stroke: rgba(255,255,255,0.4) !important;
+  stroke-width: 1.5 !important;
+}
+
+.react-flow__selection {
+  background: rgba(59,130,246,0.06) !important;
+  border: 1px solid rgba(59,130,246,0.3) !important;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-focus); border-radius: 2px; }
