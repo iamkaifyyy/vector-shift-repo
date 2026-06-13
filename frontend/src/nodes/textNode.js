@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Position } from 'reactflow';
 import { BaseNode, StyledHandle } from './BaseNode';
+import { useStore } from '../store';
 
 /* ── Variable extractor ──────────────────────────────────────── */
 const VAR_REGEX = /\{\{([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\}\}/g;
@@ -19,6 +20,7 @@ function extractVariables(text) {
 
 /* ── TextNode ────────────────────────────────────────────────── */
 export const TextNode = ({ id, data, selected }) => {
+  const updateNodeField           = useStore((state) => state.updateNodeField);
   const [text, setText]           = useState(data?.text || '{{input}}');
   const [variables, setVariables] = useState([]);
   const textareaRef               = useRef(null);
@@ -96,7 +98,10 @@ export const TextNode = ({ id, data, selected }) => {
         <textarea
           ref={textareaRef}
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+            setText(e.target.value);
+            updateNodeField(id, 'text', e.target.value);
+          }}
           placeholder="Type text… use {{variable}} to create handles"
           style={{
             width: '100%',

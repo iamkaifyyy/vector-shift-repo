@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import { useStore } from './store';
+import { ResultModal } from './ResultModal'; // ✅ CHANGED: import modal
 
 export const SubmitButton = () => {
   const [hovered, setHovered] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null); // ✅ CHANGED: store result for modal
 
   const nodes = useStore((s) => s.nodes);
   const edges = useStore((s) => s.edges);
@@ -27,12 +29,7 @@ export const SubmitButton = () => {
       if (!res.ok) throw new Error(`Server error ${res.status}`);
 
       const data = await res.json();
-      alert(
-        `Pipeline Analysis\n\n` +
-        `Nodes:     ${data.num_nodes}\n` +
-        `Edges:     ${data.num_edges}\n` +
-        `Valid DAG: ${data.is_dag ? '✓ Yes' : '✗ No (contains a cycle)'}`
-      );
+      setResult(data); // ✅ CHANGED: set result to show modal instead of alert()
     } catch (err) {
       alert(`Could not reach backend.\n\n${err.message}`);
     } finally {
@@ -41,12 +38,10 @@ export const SubmitButton = () => {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '16px 0',
-    }}>
+    <>
+      {/* ✅ CHANGED: render modal when result exists */}
+      {result && <ResultModal data={result} onClose={() => setResult(null)} />}
+
       <button
         onClick={handleSubmit}
         disabled={loading}
@@ -93,6 +88,6 @@ export const SubmitButton = () => {
           </>
         )}
       </button>
-    </div>
+    </>
   );
 };
