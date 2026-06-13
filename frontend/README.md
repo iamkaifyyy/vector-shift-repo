@@ -1,70 +1,141 @@
-# Getting Started with Create React App
+# VectorShift
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+VectorShift is a visual pipeline builder that lets users create workflows by connecting nodes in an interactive drag-and-drop interface. It uses React Flow on the frontend and FastAPI on the backend to manage and validate pipeline data.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+* Drag-and-drop node editor
+* Connect nodes to build pipelines
+* Multiple node types
+* Real-time graph updates
+* Pipeline validation
+* DAG (Directed Acyclic Graph) check using Kahn’s Algorithm
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Tech Stack
 
-### `npm test`
+### Frontend
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* React
+* React Flow
 
-### `npm run build`
+### Backend
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* FastAPI
+* Python
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Installation
 
-### `npm run eject`
+### Clone the repository
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+git clone https://github.com/your-username/vector-shift-repo.git
+cd vector-shift-repo
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Frontend Setup
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+cd frontend
+npm install
+npm start
+```
 
-## Learn More
+Frontend runs on:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+http://localhost:3000
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+### Backend Setup
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
 
-### Analyzing the Bundle Size
+Backend runs on:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```
+http://localhost:8000
+```
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## API Reference
 
-### Advanced Configuration
+### POST `/pipelines/parse`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+This endpoint validates and analyzes the pipeline structure.
 
-### Deployment
+### Request Body
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```json
+{
+  "nodes": [
+    {
+      "id": "1",
+      "type": "input"
+    }
+  ],
+  "edges": [
+    {
+      "source": "1",
+      "target": "2"
+    }
+  ]
+}
+```
 
-### `npm run build` fails to minify
+### Response
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```json
+{
+  "num_nodes": 2,
+  "num_edges": 1,
+  "is_dag": true
+}
+```
+
+### Fields
+
+* `num_nodes`: Total number of nodes in the pipeline
+* `num_edges`: Total number of connections
+* `is_dag`: Whether the pipeline is a valid Directed Acyclic Graph
+
+---
+
+## How It Works
+
+1. Users create nodes in the frontend
+2. Nodes are connected using edges
+3. Pipeline is sent to backend via API
+4. Backend validates structure
+5. Response is returned with analysis
+
+---
+
+## Project Structure
+
+```text
+vector-shift-repo/
+├── frontend/
+├── backend/
+└── README.md
+```
+
+---
+
+## License
+
+This project is for educational purposes.

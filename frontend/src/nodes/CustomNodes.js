@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { Position } from 'reactflow';
 import { BaseNode } from './BaseNode';
 
-/* ── 1. Note Node ────────────────────────────────────────────── */
-// Sticky-note style — no handles, purely informational
+
 export const NoteNode = ({ id, data, selected }) => {
   const [note, setNote] = useState(data?.note || 'Add a note...');
 
