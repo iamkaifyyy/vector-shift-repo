@@ -6,12 +6,12 @@ VectorShift is a visual pipeline builder that lets users create workflows by con
 
 ## Features
 
-* Drag-and-drop node editor
-* Connect nodes to build pipelines
-* Multiple node types
-* Real-time graph updates
-* Pipeline validation
-* DAG (Directed Acyclic Graph) check using Kahn’s Algorithm
+- Drag-and-drop node editor
+- Connect nodes to build pipelines
+- Multiple node types
+- Real-time graph updates
+- Pipeline validation
+- DAG (Directed Acyclic Graph) check using Kahn’s Algorithm
 
 ---
 
@@ -19,13 +19,13 @@ VectorShift is a visual pipeline builder that lets users create workflows by con
 
 ### Frontend
 
-* React
-* React Flow
+- React
+- React Flow
 
 ### Backend
 
-* FastAPI
-* Python
+- FastAPI
+- Python
 
 ---
 
@@ -109,9 +109,9 @@ This endpoint validates and analyzes the pipeline structure.
 
 ### Fields
 
-* `num_nodes`: Total number of nodes in the pipeline
-* `num_edges`: Total number of connections
-* `is_dag`: Whether the pipeline is a valid Directed Acyclic Graph
+- `num_nodes`: Total number of nodes in the pipeline
+- `num_edges`: Total number of connections
+- `is_dag`: Whether the pipeline is a valid Directed Acyclic Graph
 
 ---
 
